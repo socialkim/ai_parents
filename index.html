@@ -1,0 +1,627 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>말로 만드는 AI 놀이 | AI 시대, 부모로 살아가기 북토크</title>
+<meta name="description" content="아이가 말하고, 보고, 다시 말하면 그림·게임·영상이 됩니다. 『AI 시대, 부모로 살아가기』 북토크 현장 실습 페이지.">
+<link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/variable/pretendardvariable-dynamic-subset.min.css" rel="stylesheet">
+<style>
+:root{
+  --accent:#C2410C;--accent-soft:#FFF1E8;--accent-line:#FED7BF;
+  --ink:#1C1917;--muted:#6B6460;--line:#E7E2DD;--bg:#FAF7F3;--card:#FFFFFF;
+  --ok:#15803D;--ok-soft:#EAF7EE;--paid:#6D28D9;--paid-soft:#F3EEFF;
+  --font:'Pretendard Variable',-apple-system,system-ui,sans-serif;--r:16px;--r-sm:10px;
+}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:var(--font);background:var(--bg);color:var(--ink);line-height:1.6;font-size:16px;-webkit-font-smoothing:antialiased;word-break:keep-all}
+a{color:var(--accent)}
+
+.hero{background:var(--ink);color:#fff;padding:36px 20px 28px}
+.hero .wrap{max-width:760px;margin:0 auto}
+.hero .tag{display:inline-block;font-size:12px;font-weight:700;letter-spacing:.04em;color:var(--accent-line);margin-bottom:12px}
+.hero h1{font-size:30px;font-weight:800;line-height:1.25;letter-spacing:-.02em;margin-bottom:12px}
+.hero p{opacity:.78;margin-bottom:20px}
+.loop{display:flex;flex-wrap:wrap;gap:6px;align-items:center;margin-bottom:24px}
+.loop span{font-size:14px;font-weight:700;background:rgba(255,255,255,.1);border-radius:99px;padding:6px 12px}
+.loop i{font-style:normal;opacity:.5;font-size:14px}
+.progress{display:flex;align-items:center;gap:16px}
+.progress .num{font-size:19px;font-weight:800;line-height:1;white-space:nowrap}
+.progress .num small{font-size:14px;font-weight:600;opacity:.6;margin-left:4px}
+.bar{flex:1;height:10px;background:rgba(255,255,255,.18);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:var(--accent-line);border-radius:99px;transition:width .35s}
+
+.tabs{position:sticky;top:0;z-index:50;background:var(--card);border-bottom:1px solid var(--line)}
+.tabs .wrap{max-width:760px;margin:0 auto;display:flex;overflow-x:auto;scrollbar-width:none}
+.tabs .wrap::-webkit-scrollbar{display:none}
+.tab{flex:1 0 auto;padding:14px 14px;font-size:15px;font-weight:600;color:var(--muted);background:none;border:0;border-bottom:3px solid transparent;font-family:var(--font);cursor:pointer;white-space:nowrap}
+.tab.on{color:var(--accent);border-bottom-color:var(--accent)}
+.tab .pill{font-size:11px;font-weight:700;border-radius:99px;padding:1px 6px;margin-left:4px;vertical-align:2px}
+.pill.free{background:var(--ok-soft);color:var(--ok)}
+.pill.paid{background:var(--paid-soft);color:var(--paid)}
+
+.main{max-width:760px;margin:0 auto;padding:24px 16px 96px}
+.panel{display:none}.panel.on{display:block}
+.lead{margin:0 0 20px}
+.lead b{color:var(--accent)}
+.card{background:var(--card);border-radius:var(--r);padding:20px 16px;margin-bottom:16px;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.card .head{display:flex;align-items:flex-start;gap:12px;margin-bottom:12px}
+.step{flex:0 0 36px;height:36px;border-radius:10px;background:var(--accent-soft);color:var(--accent);font-weight:800;display:flex;align-items:center;justify-content:center}
+.paidp .step{background:var(--paid-soft);color:var(--paid)}
+.card h3{flex:1;font-size:19px;font-weight:700;line-height:1.35}
+.card .app{font-size:13px;color:var(--muted);margin-top:4px;font-weight:500}
+
+.ask{border-left:4px solid var(--accent-line);padding:8px 12px;margin-bottom:12px;background:#FFFBF7;border-radius:0 var(--r-sm) var(--r-sm) 0}
+.ask .lbl{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:2px}
+.ask .q{font-size:17px;font-weight:700}
+
+.say{background:var(--accent-soft);border-radius:var(--r-sm);padding:16px;cursor:pointer;margin-bottom:12px;border:1.5px solid transparent;transition:border-color .2s}
+.say:hover{border-color:var(--accent-line)}
+.say:active{opacity:.85}
+.paidp .say{background:var(--paid-soft)}
+.say .lbl{font-size:12px;font-weight:700;color:var(--accent);letter-spacing:.02em;margin-bottom:4px}
+.paidp .say .lbl{color:var(--paid)}
+.say .txt{font-size:19px;font-weight:600;line-height:1.55;white-space:pre-wrap}
+.say .txt u{text-decoration:none;background:#fff;border:1.5px dashed var(--accent-line);border-radius:6px;padding:0 6px;color:var(--accent)}
+.say .hint{font-size:13px;color:var(--muted);margin-top:8px}
+
+.quote{background:#F5F2EE;border-radius:var(--r-sm);padding:14px 16px;margin-bottom:12px}
+.quote .lbl{font-size:12px;font-weight:700;color:var(--muted);margin-bottom:4px}
+.quote p{font-size:15px;font-style:normal}
+
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:4px 0 12px}
+.chip{font-family:var(--font);font-size:15px;font-weight:600;background:var(--card);border:1.5px solid var(--accent-line);color:var(--ink);border-radius:99px;padding:8px 14px;cursor:pointer;text-align:left}
+.paidp .chip{border-color:#D9C9FB}
+.chip:active{opacity:.7}
+
+.tip{font-size:14px;color:var(--ink)}
+.tip b{color:var(--accent)}
+.paidp .tip b{color:var(--paid)}
+.tip+.tip{margin-top:6px}
+.done{margin-top:14px;width:100%;padding:12px;border-radius:var(--r-sm);border:1.5px solid var(--line);background:var(--card);font-family:var(--font);font-size:15px;font-weight:600;color:var(--muted);cursor:pointer}
+.done.on{background:var(--ok-soft);border-color:var(--ok);color:var(--ok)}
+
+.choice{border:1.5px solid var(--line);border-radius:var(--r-sm);padding:14px;margin-bottom:10px}
+.choice .ttl{font-size:16px;font-weight:700;margin-bottom:8px;display:flex;gap:8px;align-items:center}
+.choice .lv{font-size:12px;font-weight:700;color:var(--muted);background:#F5F2EE;border-radius:99px;padding:2px 8px}
+.choice .say{margin-bottom:0}
+
+.box{background:var(--card);border:1.5px solid var(--line);border-radius:var(--r);padding:16px;margin:8px 0 16px}
+.box h3{font-size:17px;font-weight:700;margin-bottom:8px}
+.box ul{padding-left:18px}
+.box li{font-size:14px;margin:4px 0}
+.box.warn{background:#FFF8E6;border-color:#F5D98A}
+.box.paidbox{background:var(--paid-soft);border-color:#D9C9FB}
+
+.fixgrid{display:grid;grid-template-columns:1fr;gap:10px;margin-bottom:16px}
+@media(min-width:560px){.fixgrid{grid-template-columns:1fr 1fr}}
+.fix{background:var(--card);border-radius:var(--r-sm);padding:14px;cursor:pointer;box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.fix .k{font-size:13px;font-weight:700;color:var(--accent);margin-bottom:2px}
+.fix .v{font-size:17px;font-weight:700}
+.fix .e{font-size:13px;color:var(--muted);margin-top:4px}
+
+.rule{display:flex;gap:14px;background:var(--card);border-radius:var(--r);padding:16px;margin-bottom:10px}
+.rule .n{flex:0 0 28px;font-size:19px;font-weight:800;color:var(--accent);line-height:1.3}
+.rule h3{font-size:17px;font-weight:700;margin-bottom:2px}
+.rule p{font-size:14px;color:var(--ink)}
+
+.section-h{font-size:13px;font-weight:700;color:var(--muted);letter-spacing:.04em;margin:28px 0 12px}
+.links{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.links a{font-size:14px;font-weight:600;text-decoration:none;background:var(--card);border:1px solid var(--line);border-radius:99px;padding:8px 16px;color:var(--ink)}
+.case{display:block;background:var(--card);border-radius:var(--r);padding:16px;margin-bottom:10px;text-decoration:none;color:var(--ink);box-shadow:0 1px 2px rgba(0,0,0,.05)}
+.case b{display:block;font-size:16px}
+.case span{font-size:13px;color:var(--muted)}
+
+.bio{background:var(--card);border-radius:var(--r);padding:20px 16px;margin:8px auto 16px;max-width:760px}
+.bio h3{font-size:17px;font-weight:700;margin-bottom:6px}
+.bio p{font-size:14px;margin:6px 0}
+.foot{max-width:760px;margin:0 auto;padding:0 16px 40px;color:var(--muted);font-size:13px;line-height:1.6}
+
+.toast{position:fixed;left:50%;bottom:84px;transform:translateX(-50%) translateY(16px);background:var(--ink);color:#fff;padding:12px 24px;border-radius:12px;font-weight:600;opacity:0;pointer-events:none;transition:all .3s;z-index:99;white-space:nowrap}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.fs{position:fixed;right:16px;bottom:16px;display:flex;gap:8px;z-index:60}
+.fs button{min-width:44px;height:44px;padding:0 10px;border-radius:12px;border:1px solid var(--line);background:var(--card);font-family:var(--font);font-size:15px;font-weight:800;cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.08);color:var(--ink)}
+.qr{position:fixed;inset:0;background:rgba(28,25,23,.85);display:none;align-items:center;justify-content:center;z-index:100;padding:16px}
+.qr.on{display:flex}
+.qr .in{background:#fff;border-radius:20px;padding:28px;text-align:center;max-width:420px;width:100%}
+.qr #qrc{display:flex;justify-content:center;margin:16px 0}
+.qr #qrc img,.qr #qrc canvas{width:260px!important;height:260px!important}
+.qr .u{font-size:13px;color:var(--muted);word-break:break-all}
+.qr h3{font-size:22px;font-weight:800}
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <span class="tag">『AI 시대, 부모로 살아가기』 북토크 · 김덕진 × 임한나</span>
+    <h1>아이의 말이<br>그림·게임·영상이 되는 25분</h1>
+    <p>키보드는 필요 없습니다. 아이가 말하고, 부모는 마이크 버튼만 눌러 주세요. 색칠된 상자를 누르면 문장이 복사됩니다.</p>
+    <div class="loop" aria-label="오늘의 순서">
+      <span>① 말하기</span><i>→</i><span>② 살펴보기</span><i>→</i><span>③ 다시 말하기</span><i>→</i><span>④ 보여주기</span>
+    </div>
+    <div class="progress">
+      <div class="num"><span id="doneN">0</span><small>/ <span id="totalN">0</span> 완료</small></div>
+      <div class="bar"><i id="barFill"></i></div>
+    </div>
+  </div>
+</header>
+
+<nav class="tabs">
+  <div class="wrap">
+    <button class="tab on" data-t="0">준비</button>
+    <button class="tab" data-t="w">몸풀기<span class="pill free">무료</span></button>
+    <button class="tab" data-t="1">그림<span class="pill free">무료</span></button>
+    <button class="tab" data-t="2">게임<span class="pill free">무료</span></button>
+    <button class="tab" data-t="3">영상<span class="pill paid">유료</span></button>
+    <button class="tab" data-t="4">고치는 말</button>
+    <button class="tab" data-t="5">우리 집 약속</button>
+  </div>
+</nav>
+
+<main class="main">
+
+<!-- 0 준비 -->
+<section class="panel on" id="p-0">
+  <p class="lead">오늘은 수찬이가 집에서 했던 그대로 해 봅니다. 수찬이도 처음엔 길을 걷다 “만들고 싶은 캐릭터가 있어요”라고 말했고, 아빠는 <b>“그러면 그냥 해봐.”</b> 한마디로 휴대폰을 켰어요. 준비는 1분이면 됩니다.</p>
+
+  <div class="card" data-id="ready">
+    <div class="head"><div class="step">1</div><div><h3>부모님 휴대폰 한 대로, 같이</h3><div class="app">챗GPT 앱 또는 chatgpt.com · 무료 계정이면 충분</div></div></div>
+    <p class="tip">아이 계정을 따로 만들지 않고 <b>부모 계정으로 나란히 앉아서</b> 합니다. 저희 집 원칙 두 번째, “15세 전에는 독립된 AI 계정 없이”를 오늘도 그대로 지켜요.</p>
+    <p class="tip">앱이 있다면 <b>먼저 업데이트</b>하고 <b>새 대화</b>를 열어 주세요. 대화창 안에서 바로 하는 게임 기능은 무료 계정에 10월 8일부터 차례로 들어오고 있어서, 최신 버전이어야 보일 가능성이 높습니다.</p>
+    <div class="links"><a href="https://chatgpt.com" target="_blank" rel="noopener">chatgpt.com 열기</a></div>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="card" data-id="mic">
+    <div class="head"><div class="step">2</div><div><h3>마이크(🎤) 버튼을 찾으세요</h3><div class="app">입력창 오른쪽 · 받아쓰기</div></div></div>
+    <p class="tip">① 부모가 <b>마이크 🎤</b>를 누르고 → ② 아이가 말하고 → ③ 다시 누르면 글자로 바뀝니다 → ④ 보내기.</p>
+    <p class="tip">옆에 있는 <b>동그란 파형 버튼(음성 대화)</b>은 오늘은 쓰지 않습니다. 그림과 게임을 만들 때는 받아쓰기로 보내는 쪽이 결과가 안정적이에요.</p>
+    <p class="tip">말이 매끄럽지 않아도 괜찮습니다. “음… 그리고…”가 섞여도 AI는 알아듣습니다. 고칠 건 보내기 전에 글자로 살짝 고쳐도 되고요.</p>
+    <div class="say" onclick="cp(this)">
+      <div class="lbl">마이크 연습 · 아이가 한 문장</div>
+      <div class="txt">안녕! 나는 <u>(이름)</u>이야. 오늘 너랑 내가 생각한 캐릭터를 만들어 보고 싶어.</div>
+      <div class="hint">누르면 복사 · 소리 내어 따라 말해도 됩니다</div>
+    </div>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="box">
+    <h3>오늘의 코스 (약 25분)</h3>
+    <ul>
+      <li><b>몸풀기</b> 4분 · 무료 — 가을 인사 카드 또는 부모님 셀카 만화 캐릭터, 하나만</li>
+      <li><b>그림</b> 7분 · 무료 — 말로 캐릭터를 그리고, 말로 고칩니다</li>
+      <li><b>게임</b> 8분 · 무료 — 그 캐릭터로 대화창 안에서 바로 하는 게임</li>
+      <li><b>영상</b> 5분 · 유료(Plus 이상) — Work로 모션그래픽 영상을 맡겨 두고, 끝날 때 확인</li>
+    </ul>
+    <p class="tip" style="margin-top:8px">다 못 해도 괜찮아요. 이 페이지는 집에서도 그대로 열립니다.</p>
+  </div>
+</section>
+
+<!-- w 몸풀기 -->
+<section class="panel" id="p-w">
+  <p class="lead">캐릭터 만들기 전에 손부터 풀어 볼게요. 목표는 하나예요. <b>“말로 만들고, 말로 고칠 수 있다”</b>를 한 번 겪어 보는 것. <b>A와 B 중 하나만</b> 골라 3분이면 됩니다.</p>
+
+  <div class="card" data-id="wa">
+    <div class="head"><div class="step">A</div><div><h3>가을 인사 카드</h3><div class="app">가족 모두 · 가장 쉬움 · 사진 필요 없음</div></div></div>
+
+    <div class="ask"><div class="lbl">① 만들기 · 아이가 말하기</div><div class="q">누구에게 보낼까? 할머니? 선생님?</div></div>
+    <div class="say" onclick="cp(this)">
+      <div class="txt">가을 인사 카드에 쓸 그림을 그려줘. 단풍잎이 떨어지는 공원에서 <u>우리 가족 세 명</u>이 손잡고 걷는 따뜻한 그림으로. 위에 <u>“풍성한 가을 보내세요”</u>라고 한글로 크게 써줘.</div>
+      <div class="hint">누르면 복사</div>
+    </div>
+
+    <div class="ask"><div class="lbl">② 말로 고치기 · 핵심</div><div class="q">“그림 보니까 뭘 바꾸고 싶어?”</div></div>
+    <div class="say" onclick="cp(this)">
+      <div class="txt">단풍을 더 빨갛게 하고, 하늘은 <u>노을 지는 색</u>으로 바꿔줘. 나머지는 그대로 둬.</div>
+      <div class="hint">누르면 복사</div>
+    </div>
+    <div class="chips">
+      <button class="chip" onclick="cp(this)">우리 집 강아지도 한 마리 넣어줘. 나머지는 그대로 둬.</button>
+      <button class="chip" onclick="cp(this)">할로윈 느낌으로 호박이랑 귀여운 유령도 넣어줘.</button>
+      <button class="chip" onclick="cp(this)">수채화 그림책 느낌으로 다시 그려줘.</button>
+    </div>
+
+    <div class="ask"><div class="lbl">③ 보내기</div><div class="q">“할머니께 뭐라고 쓸까?”</div></div>
+    <div class="say" onclick="cp(this)">
+      <div class="txt">이 카드와 같이 <u>할머니</u>께 보낼 인사말을 세 줄로 써줘. 내가 하고 싶은 말은 <u>(아이가 한 말)</u>이야.</div>
+      <div class="hint">누르면 복사 · 완성하면 가족 단톡방에 바로 보내 보세요</div>
+    </div>
+    <p class="tip">한글이 깨지면 <b>“글자는 빼고 그림만 다시 그려줘”</b>라고 하고, 인사말은 메시지에 따로 적으면 됩니다.</p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="card" data-id="wb">
+    <div class="head"><div class="step">B</div><div><h3>부모님 셀카로 만화 캐릭터</h3><div class="app">아이가 감독, 부모가 모델 · 사진 1장</div></div></div>
+    <p class="tip" style="margin-bottom:12px">오늘은 <b>부모님 얼굴로</b> 합니다. 아이 얼굴 사진은 올리지 않는 게 우리 집 약속이에요. 아이는 엄마·아빠를 어떤 캐릭터로 만들지 정하는 <b>감독</b>이 됩니다. 아이들이 이 순서를 제일 좋아해요.</p>
+
+    <div class="ask"><div class="lbl">① 셀카 찍고 ＋로 첨부 · 아이가 말하기</div><div class="q">“엄마를 어떤 캐릭터로 만들어 볼까?”</div></div>
+    <div class="say" onclick="cp(this)">
+      <div class="txt">이 사진 속 <u>우리 엄마</u>를 귀여운 만화 캐릭터로 그려줘. 얼굴 특징은 살리고, <u>그림책 주인공</u>처럼 밝게.</div>
+      <div class="hint">누르면 복사</div>
+    </div>
+
+    <div class="ask"><div class="lbl">② 말로 고치기 · 핵심</div><div class="q">“엄마랑 닮았어? 어디를 바꾸면 더 엄마 같을까?”</div></div>
+    <div class="say" onclick="cp(this)">
+      <div class="txt">눈을 더 크게 하고, 머리에 <u>왕관</u>을 씌워줘. 나머지는 그대로 둬.</div>
+      <div class="hint">누르면 복사</div>
+    </div>
+    <div class="chips">
+      <button class="chip" onclick="cp(this)">슈퍼히어로 옷으로 바꿔줘. 얼굴은 그대로 둬.</button>
+      <button class="chip" onclick="cp(this)">웹툰 그림체로 다시 그려줘.</button>
+      <button class="chip" onclick="cp(this)">아빠가 좋아하는 축구를 하는 모습으로 바꿔줘.</button>
+    </div>
+
+    <div class="ask"><div class="lbl">③ 하나 더 · 스티커로</div><div class="q">“엄마한테 어떤 말을 듣고 싶어?”</div></div>
+    <div class="say" onclick="cp(this)">
+      <div class="txt">이 캐릭터로 메신저에 쓸 스티커 4개를 만들어줘. <u>고마워, 사랑해, 잘 자, 최고야</u>를 말하는 표정으로.</div>
+      <div class="hint">누르면 복사</div>
+    </div>
+    <p class="tip">아이가 정한 말이 엄마 스티커가 되는 순간, <b>“내가 말한 게 그대로 됐다”</b>는 감각이 생깁니다. 다음 탭에서 아이 자기 캐릭터를 만들 힘이 여기서 나와요.</p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="box warn">
+    <h3>몸풀기 전에 알아두기</h3>
+    <ul>
+      <li>무료 계정은 <b>그림 횟수에 하루 제한</b>이 있어요. 몸풀기는 <b>두세 장 안에서</b> 끝내고, 다음 ‘그림’ 탭을 위해 남겨 두세요.</li>
+      <li>사진을 올리기 전에 <b>‘모두를 위한 모델 개선’ 끄기</b>를 권합니다. 방법은 ‘우리 집 약속’ 탭에 있어요.</li>
+      <li>다른 사람 얼굴은 그 사람이 좋다고 할 때만. 옆자리 가족 얼굴도 물어보고 찍어요.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 1 그림 -->
+<section class="panel" id="p-1">
+  <p class="lead">수찬이는 해적 모자, 노란 호박 얼굴, 두 갈고리, 나무 다리와 금 다리를 <b>말로</b> 설명했어요. 기술 용어보다 먼저, 자기 머릿속 모습을 꺼낸 겁니다.</p>
+
+  <div class="card" data-id="d1">
+    <div class="head"><div class="step">1</div><div><h3>떠올리기: 부모가 먼저 묻기</h3><div class="app">AI 켜기 전 · 30초</div></div></div>
+    <div class="ask"><div class="lbl">부모가 아이에게</div><div class="q">“무엇을 만들어 보고 싶어?”</div></div>
+    <div class="ask"><div class="lbl">이어서</div><div class="q">“꼭 들어갔으면 하는 특징 세 가지만 말해 줄래?”</div></div>
+    <p class="tip">손가락으로 하나, 둘, 셋 세면서 말하게 해 보세요. <b>머리 · 얼굴 · 손</b>, 또는 <b>색 · 옷 · 무기</b>처럼요. 이게 오늘 그림의 조건이 됩니다.</p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="card" data-id="d2">
+    <div class="head"><div class="step">2</div><div><h3>첫 번째 말하기</h3><div class="app">챗GPT · 받아쓰기로 보내기</div></div></div>
+    <div class="say" onclick="cp(this)">
+      <div class="lbl">아이가 이렇게 · 빈칸은 아이 말로</div>
+      <div class="txt">내가 생각한 게임 캐릭터를 그려줘. 머리에는 <u>(해적 모자)</u>를 쓰고 있고, 얼굴은 <u>(노란색)</u>이고, 손에는 <u>(갈고리)</u>가 있어. 밝고 귀여운 게임 그림으로 그려줘.</div>
+      <div class="hint">누르면 복사</div>
+    </div>
+    <div class="quote">
+      <div class="lbl">수찬이가 실제로 한 말 (음성 입력 원문)</div>
+      <p>“머리에는 해적 모자 같은 걸 쓰고 있고… 얼굴은 노란색… 양쪽 손에는 갈고리가 있고… 한쪽 다리는 나무고 한쪽 다리는 금이야.”</p>
+    </div>
+    <p class="tip">문장이 이렇게 끊겨도 그림은 나왔습니다. <b>정확한 문장보다, 아이 머릿속의 특징</b>이 중요해요.</p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="card" data-id="d3">
+    <div class="head"><div class="step">3</div><div><h3>살펴보고 다시 말하기 <span style="font-size:14px;color:var(--accent)">← 오늘의 핵심</span></h3><div class="app">한 번에 한두 개만 고치기</div></div></div>
+    <div class="ask"><div class="lbl">부모가 아이에게</div><div class="q">“네 생각과 어디가 달라?”</div></div>
+    <div class="say" onclick="cp(this)">
+      <div class="lbl">아이가 이렇게</div>
+      <div class="txt">좋아. 그런데 <u>모자</u>를 더 크게 해주고, 얼굴은 <u>더 웃는 표정</u>으로 바꿔줘. 나머지는 그대로 둬.</div>
+      <div class="hint">누르면 복사</div>
+    </div>
+    <p class="tip">바꿔 말해 보기 (누르면 복사):</p>
+    <div class="chips">
+      <button class="chip" onclick="cp(this)">색을 더 밝게 해줘. 나머지는 그대로 둬.</button>
+      <button class="chip" onclick="cp(this)">배경을 바다로 바꿔줘.</button>
+      <button class="chip" onclick="cp(this)">그림책 느낌으로 다시 그려줘.</button>
+      <button class="chip" onclick="cp(this)">아까 그림이 더 좋았어. 거기서 신발만 빨간색으로.</button>
+    </div>
+    <p class="tip"><b>“나머지는 그대로 둬”</b>가 마법의 말입니다. 이 말이 없으면 AI가 전부 새로 그려서, 아이가 좋아하던 부분까지 바뀔 수 있어요.</p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="card" data-id="d4">
+    <div class="head"><div class="step">4</div><div><h3>움직임 말하기: 생김새 다음은 행동</h3><div class="app">게임·영상 단계의 재료가 됩니다</div></div></div>
+    <div class="say" onclick="cp(this)">
+      <div class="lbl">아이가 이렇게</div>
+      <div class="txt">이 캐릭터가 <u>(공격하는 / 점프하는 / 춤추는)</u> 모습도 그려줘. <u>양쪽 갈고리가 늘어나면서</u> 공격하는 장면으로.</div>
+      <div class="hint">누르면 복사</div>
+    </div>
+    <p class="tip">수찬이도 그림을 보고 나서야 “갈고리가 늘어나면서 공격하는 모션”을 떠올렸어요. <b>첫 결과가 다음 생각을 만드는 재료</b>가 됩니다.</p>
+    <p class="tip">마음에 드는 그림은 <b>꾹 눌러 저장</b>해 두세요. 영상 단계에서 씁니다.</p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="box warn">
+    <h3>알아두기</h3>
+    <ul>
+      <li>무료 계정은 <b>그림 만들기 횟수에 하루 제한</b>이 있어요. 한 번에 하나씩 고치면 몇 번 만에 원하는 그림에 닿습니다.</li>
+      <li>유명 만화·게임 캐릭터는 그려 주지 않을 수 있어요. <b>아이가 새로 지어낸 캐릭터</b>가 오히려 잘 나오고, 아이에게도 더 오래 남습니다.</li>
+      <li>글자가 깨지면 “글자는 빼고 그림만 그려줘”라고 말해 주세요.</li>
+    </ul>
+  </div>
+</section>
+
+<!-- 2 게임 -->
+<section class="panel" id="p-2">
+  <p class="lead">이번 10월부터 챗GPT가 답을 할 때 <b>대화창 안에 직접 눌러 볼 수 있는 게임이나 도구</b>를 같이 보여 줄 수 있게 됐어요. 무료 계정에도 순서대로 들어오는 중입니다. 코딩은 한 줄도 필요 없어요.</p>
+
+  <div class="card" data-id="g1">
+    <div class="head"><div class="step">1</div><div><h3>게임 하나 고르고 말하기</h3><div class="app">방금 그림 그린 대화에 이어서 말하면 캐릭터가 이어집니다</div></div></div>
+    <div class="ask"><div class="lbl">부모가 아이에게</div><div class="q">“이 친구가 나오는 게임이면 뭘 하면 재밌을까?”</div></div>
+
+    <div class="choice">
+      <div class="ttl">퀴즈 게임 <span class="lv">가장 쉬움 · 유아~저학년</span></div>
+      <div class="say" onclick="cp(this)">
+        <div class="txt">내 캐릭터가 문제를 내는 퀴즈 게임을 대화창 안에서 바로 풀 수 있게 만들어줘. <u>공룡</u>에 대한 문제 5개, 맞히면 캐릭터가 칭찬해줘.</div>
+        <div class="hint">누르면 복사</div>
+      </div>
+    </div>
+    <div class="choice">
+      <div class="ttl">별 모으기 게임 <span class="lv">보통 · 초등</span></div>
+      <div class="say" onclick="cp(this)">
+        <div class="txt">방금 그린 캐릭터가 주인공인 게임을 대화창 안에서 바로 해볼 수 있게 만들어줘. 하늘에서 <u>별</u>이 떨어지면 화면을 눌러서 캐릭터를 움직여 별을 모으는 거야. 30초 동안 모은 별 개수가 점수야.</div>
+        <div class="hint">누르면 복사</div>
+      </div>
+    </div>
+    <div class="choice">
+      <div class="ttl">리듬 게임 <span class="lv">도전 · 수찬이처럼</span></div>
+      <div class="say" onclick="cp(this)">
+        <div class="txt">버튼 네 개를 박자에 맞춰 누르는 리듬 게임을 대화창 안에서 바로 해볼 수 있게 만들어줘. 위에서 노트가 내려오면 맞는 버튼을 눌러. 내 캐릭터가 성공할 때마다 공격해. 쉬움이랑 어려움 두 단계로.</div>
+        <div class="hint">누르면 복사</div>
+      </div>
+    </div>
+    <p class="tip">핵심 말은 <b>“대화창 안에서 바로 해볼 수 있게”</b>입니다. 이 말이 있어야 글 설명이 아니라 게임 화면으로 나올 가능성이 높아요.</p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="card" data-id="g2">
+    <div class="head"><div class="step">2</div><div><h3>해 보고, 불편한 점 말하기</h3><div class="app">아이가 플레이어 → 검사하는 사람</div></div></div>
+    <div class="ask"><div class="lbl">부모가 아이에게</div><div class="q">“해 보니까 뭐가 불편해? 뭐가 제일 아쉬워?”</div></div>
+    <div class="chips">
+      <button class="chip" onclick="cp(this)">너무 빨라. 조금 느리게 해줘.</button>
+      <button class="chip" onclick="cp(this)">점수가 잘 안 보여. 위에 크게 보여줘.</button>
+      <button class="chip" onclick="cp(this)">버튼이 너무 작아. 손가락으로 누르기 쉽게 크게 해줘.</button>
+      <button class="chip" onclick="cp(this)">성공하면 효과음이랑 반짝이는 효과를 넣어줘.</button>
+    </div>
+    <div class="quote">
+      <div class="lbl">쿠키 어드벤처 첫 버전을 해 본 수찬이 (9세)</div>
+      <p>“화면이 잘려요. 쿠키들이 겹쳐서 선택하기 어려워요. 네모난 칸에 하나씩 넣어주세요.”</p>
+    </div>
+    <p class="tip">아이는 가르치지 않아도 <b>불편을 찾아 말로 정리</b>합니다. 부모는 받아 적듯 마이크만 눌러 주세요.</p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="card" data-id="g3">
+    <div class="head"><div class="step">3</div><div><h3>규칙 더하기, 더 정확하게 말하기</h3><div class="app">AI가 잘못 알아들으면 바로잡기</div></div></div>
+    <div class="say" onclick="cp(this)">
+      <div class="lbl">아이가 이렇게</div>
+      <div class="txt">좋아. 이제 함정을 넣어줘. <u>빨간 X</u>가 나오면 누르면 안 돼. 함정은 <u>‘엄청 어려움’ 단계에서만</u> 나오게 해줘.</div>
+      <div class="hint">누르면 복사</div>
+    </div>
+    <div class="say" onclick="cp(this)">
+      <div class="lbl">AI가 다르게 알아들었을 때</div>
+      <div class="txt">내가 말한 ‘어렵게’는 <u>노트가 빨리 내려와서 누르기 어려운 것</u>이라는 뜻이야. 그렇게 다시 해줘.</div>
+      <div class="hint">누르면 복사</div>
+    </div>
+    <p class="tip">수찬이는 “어렵게”라는 말을 AI가 다르게 해석하자, <b>“누르기 어려운 속도”</b>라고 다시 설명했어요. 함정도 ‘어려움’이 아니라 ‘엄청 어려움’에 넣어 달라고 고쳤고요. 결과를 본 뒤에 <b>말이 더 정확해지는 것</b>, 이게 오늘 보고 싶은 장면입니다.</p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="card" data-id="g4">
+    <div class="head"><div class="step">4</div><div><h3>친구에게 보여줄 준비</h3><div class="app">관계 맺는 힘 · 다른 사람이 해본다면</div></div></div>
+    <div class="ask"><div class="lbl">부모가 아이에게</div><div class="q">“친구가 처음 해본다면 뭘 알려줘야 할까?”</div></div>
+    <div class="say" onclick="cp(this)">
+      <div class="lbl">아이가 이렇게</div>
+      <div class="txt">게임 시작 화면에 친구가 처음 해도 알 수 있게 규칙 설명을 세 줄로 넣어줘. 게임 이름은 <u>(아이가 지은 이름)</u>으로 해줘.</div>
+      <div class="hint">누르면 복사</div>
+    </div>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="box warn">
+    <h3>게임 화면이 안 뜨고 글자(코드)만 나오면</h3>
+    <ul>
+      <li>먼저 이렇게 말해 보세요: <b>“코드 말고 대화창 안에서 바로 눌러 볼 수 있는 화면으로 보여줘.”</b></li>
+      <li>그래도 안 되면 앱을 업데이트하고 <b>새 대화</b>에서 다시. 이 기능은 계정마다 차례로 열리는 중이라 아직 안 보이는 분도 있습니다.</li>
+      <li>오늘 바로 해 보고 싶다면 같은 말을 <b>제미나이(캔버스)</b>나 <b>클로드</b>에 해도 무료로 게임 화면이 만들어집니다.</li>
+    </ul>
+    <div class="links"><a href="https://gemini.google.com" target="_blank" rel="noopener">제미나이</a><a href="https://claude.ai" target="_blank" rel="noopener">클로드</a></div>
+  </div>
+</section>
+
+<!-- 3 영상 (유료) -->
+<section class="panel paidp" id="p-3">
+  <p class="lead">챗GPT <b style="color:var(--paid)">Plus 이상</b>이라면 <b style="color:var(--paid)">Work</b>를 써 볼 수 있어요. 채팅이 한 번 답하는 거라면, Work는 일을 통째로 맡기면 계획을 세우고 여러 단계를 거쳐 <b style="color:var(--paid)">완성된 파일</b>을 돌려줍니다. 수찬이의 32초 영상도 이렇게 나왔어요: 그림 → 자세와 배경 → 박자 → 소리 → MP4.</p>
+
+  <div class="box paidbox">
+    <h3>현장에서는 이렇게</h3>
+    <ul>
+      <li>영상은 <b>몇 분에서 수십 분</b> 걸려요. 지금 맡겨 두고 북토크 끝날 때 열어 보세요.</li>
+      <li>Work는 요금제의 <b>사용량에서 차감</b>됩니다. 오늘은 짧은 영상 한 편이면 충분해요.</li>
+      <li>무료·Go 계정은 웹·모바일에서 Work를 쓸 수 없습니다. 무료 계정이면 이 탭은 보면서 따라오시고, 집에서 해 보세요.</li>
+    </ul>
+  </div>
+
+  <div class="card" data-id="w0">
+    <div class="head"><div class="step">0</div><div><h3>Work로 바꾸기</h3><div class="app">chatgpt.com · 앱 · PC 앱</div></div></div>
+    <p class="tip">화면 위쪽이나 왼쪽 메뉴에서 <b>Chat → Work</b>로 바꿉니다. PC 앱은 맨 위 전환 버튼에서 고를 수 있어요. 메뉴가 안 보이면 앱 업데이트와 요금제를 확인해 주세요.</p>
+    <p class="tip">그림 단계에서 저장한 <b>캐릭터 그림 1~2장</b>을 첨부(＋)합니다.</p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="card" data-id="w1">
+    <div class="head"><div class="step">1</div><div><h3>맡기기: 계획부터 먼저</h3><div class="app">그림 첨부 + 말하기</div></div></div>
+    <div class="say" onclick="cp(this)">
+      <div class="lbl">아이와 함께 이렇게</div>
+      <div class="txt">첨부한 캐릭터 그림으로 <u>15초</u>짜리 모션그래픽 영상을 만들어줘. 캐릭터가 등장해서 인사하고, <u>공격 동작</u>을 한 번 하고, 마지막에 이름 <u>(캐릭터 이름)</u>이 크게 나오게. 신나는 배경음악과 효과음도 넣어서 MP4 파일로 줘. 만들기 전에 장면 순서를 먼저 보여줘.</div>
+      <div class="hint">누르면 복사</div>
+    </div>
+    <p class="tip"><b>“만들기 전에 장면 순서를 먼저 보여줘”</b>를 꼭 붙이세요. 다 만들고 나서 고치는 것보다, 계획 단계에서 아이가 고치는 게 빠르고 재밌습니다.</p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="card" data-id="w2">
+    <div class="head"><div class="step">2</div><div><h3>계획을 보고 고치기</h3><div class="app">만들기 전에</div></div></div>
+    <div class="ask"><div class="lbl">부모가 아이에게</div><div class="q">“장면 순서 읽어 줄게. 바꾸고 싶은 데 있어?”</div></div>
+    <div class="say" onclick="cp(this)">
+      <div class="lbl">아이가 이렇게</div>
+      <div class="txt">두 번째 장면에서 공격하기 전에 <u>노란 느낌표</u>가 번쩍 나오게 바꿔줘. 나머지는 좋아. 이대로 만들어줘.</div>
+      <div class="hint">누르면 복사</div>
+    </div>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="card" data-id="w3">
+    <div class="head"><div class="step">3</div><div><h3>영상을 보고 다시 말하기</h3><div class="app">수찬이가 두 번째 영상에서 요청한 것들</div></div></div>
+    <div class="chips">
+      <button class="chip" onclick="cp(this)">캐릭터마다 목소리를 다르게 해줘.</button>
+      <button class="chip" onclick="cp(this)">한쪽 손으로만 공격하게 바꿔줘.</button>
+      <button class="chip" onclick="cp(this)">쉬다가 연속으로 공격하는 부분을 넣어줘.</button>
+      <button class="chip" onclick="cp(this)">조금 더 길게, 30초로 늘려줘.</button>
+      <button class="chip" onclick="cp(this)">박자를 더 빠르게 해줘.</button>
+    </div>
+    <p class="tip">수찬이의 이 네 마디가 첫 영상(32초)을 두 번째 영상(64초)으로 바꿨어요. <b>한 번에 끝내지 않고, 보고 → 다시 말하기.</b></p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="card" data-id="w4">
+    <div class="head"><div class="step">4</div><div><h3>(선택) 친구가 볼 수 있는 페이지로</h3><div class="app">Sites · Plus 이상 · 베타</div></div></div>
+    <div class="say" onclick="cp(this)">
+      <div class="lbl">이렇게 맡기기</div>
+      <div class="txt">오늘 만든 그림이랑 영상, 게임을 모아서 친구가 링크로 볼 수 있는 작은 홈페이지로 만들어줘. 내가 한 말이 어떻게 바뀌어 왔는지 순서대로 보여주는 ‘만든 과정’ 코너도 넣어줘.</div>
+      <div class="hint">누르면 복사</div>
+    </div>
+    <p class="tip">결과만 남기지 말고 <b>“무슨 말을 했고 무엇이 바뀌었는지”</b>를 같이 남겨 보세요. 수찬이 페이지도 그렇게 만들었어요. 공유 전에 <b>아이 실명·얼굴·학교</b>가 들어가지 않았는지 꼭 확인합니다.</p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+</section>
+
+<!-- 4 고치는 말 -->
+<section class="panel" id="p-4">
+  <p class="lead">AI를 잘 쓰는 비결은 첫 문장이 아니라 <b>두 번째, 세 번째 말</b>에 있습니다. 아이와 함께 쓰는 ‘고치는 말’ 일곱 가지예요. 누르면 복사됩니다.</p>
+  <div class="fixgrid">
+    <div class="fix" onclick="cp(this)"><div class="k">더하기</div><div class="v txt">(  )도 넣어줘.</div><div class="e">예: 강아지 친구도 넣어줘</div></div>
+    <div class="fix" onclick="cp(this)"><div class="k">빼기</div><div class="v txt">(  )는 빼줘.</div><div class="e">예: 뒤에 있는 나무는 빼줘</div></div>
+    <div class="fix" onclick="cp(this)"><div class="k">바꾸기</div><div class="v txt">(  )를 (  )로 바꿔줘.</div><div class="e">예: 파란 모자를 빨간 모자로</div></div>
+    <div class="fix" onclick="cp(this)"><div class="k">크기·속도</div><div class="v txt">조금 더 크게 / 더 느리게 해줘.</div><div class="e">숫자로 말하면 더 정확해요: “두 배 크게”</div></div>
+    <div class="fix" onclick="cp(this)"><div class="k">지키기</div><div class="v txt">나머지는 그대로 둬.</div><div class="e">좋은 부분을 지키는 마법의 말</div></div>
+    <div class="fix" onclick="cp(this)"><div class="k">정확히 하기</div><div class="v txt">내가 말한 (  )는 (  )라는 뜻이야.</div><div class="e">수찬: “어렵게는 누르기 어려운 속도라는 뜻이야”</div></div>
+    <div class="fix" onclick="cp(this)"><div class="k">되돌리기</div><div class="v txt">아까 두 번째 게 더 좋았어. 그걸로 다시 해줘.</div><div class="e">마음에 든 버전으로 돌아가기</div></div>
+  </div>
+
+  <div class="section-h">부모가 건네는 질문 네 가지</div>
+  <div class="card" data-id="qs">
+    <div class="ask"><div class="lbl">시작할 때</div><div class="q">무엇을 만들어 보고 싶어?</div></div>
+    <div class="ask"><div class="lbl">말하기 전에</div><div class="q">꼭 들어갔으면 하는 특징은 뭐야?</div></div>
+    <div class="ask"><div class="lbl">결과를 본 뒤에</div><div class="q">나온 결과가 네 생각과 어디가 달라?</div></div>
+    <div class="ask"><div class="lbl">마무리할 때</div><div class="q">친구가 해 본다면 무엇을 알려줘야 할까?</div></div>
+    <p class="tip">프롬프트 공식이 아니라 <b>아이의 생각을 듣고 같이 구체화하는 대화</b>입니다. 임한나 대표의 3단계 발문, <b>“무엇이 보이니? → 왜 그랬을까? → 너라면 어땠을까?”</b>를 결과 화면 앞에서 그대로 써도 좋아요.</p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="section-h">오늘 만난 네 가지 힘</div>
+  <div class="rule"><div class="n">묻</div><div><h3>묻는 힘</h3><p>만들고 싶은 것을 떠올리고 “이게 될까?” 묻기</p></div></div>
+  <div class="rule"><div class="n">쓰</div><div><h3>쓰는 힘</h3><p>생김새와 움직임, 게임 규칙을 말로 꺼내기</p></div></div>
+  <div class="rule"><div class="n">견</div><div><h3>견디는 힘</h3><p>첫 결과가 마음에 안 들어도 다시 설명하며 고치기</p></div></div>
+  <div class="rule"><div class="n">관</div><div><h3>관계 맺는 힘</h3><p>아이는 방향을 정하고, 부모는 곁에서 연결하기. 그리고 친구에게 보여주기</p></div></div>
+</section>
+
+<!-- 5 약속 -->
+<section class="panel" id="p-5">
+  <p class="lead">저희 부부가 부딪히며 합의한 기준 가운데, 오늘 실습과 바로 이어지는 것들입니다. 정답은 아니고, <b>우리 집 기준을 정하는 출발점</b>으로 써 주세요.</p>
+
+  <div class="rule"><div class="n">1</div><div><h3>AI는 놀잇감으로 시작합니다</h3><p>숙제 도우미가 아니라 오늘처럼 그림·게임으로. 부모가 먼저 써 보고 아이를 초대합니다.</p></div></div>
+  <div class="rule"><div class="n">2</div><div><h3>부모 계정으로, 나란히 앉아서</h3><p>15세 이전에는 독립 계정 없이. 오늘처럼 부모 휴대폰에서 함께 합니다.</p></div></div>
+  <div class="rule"><div class="n">3</div><div><h3>끝나는 시간을 먼저 정합니다</h3><p>아이 집중력은 10~15분. “타이머 울리면 오늘 버전 저장하고 끝” 같은 약속을 먼저.</p></div></div>
+  <div class="rule"><div class="n">4</div><div><h3>첫 문장은 아이의 것</h3><p>서툴러도 아이 입에서 먼저. AI는 마지막에 다듬습니다. 부모가 대신 그럴듯한 문장을 넣지 않기.</p></div></div>
+  <div class="rule"><div class="n">5</div><div><h3>올리지 않는 것</h3><p>아이 얼굴 사진, 실명, 학교, 사는 곳은 넣지 않습니다. 캐릭터와 상상만으로 충분해요.</p></div></div>
+
+  <div class="card" data-id="privacy">
+    <div class="head"><div class="step">✓</div><div><h3>설정 하나만 꺼 두세요</h3><div class="app">챗GPT · 설정 → 데이터 제어</div></div></div>
+    <p class="tip">개인 계정은 <b>‘모두를 위한 모델 개선’</b>이 켜져 있으면 대화가 학습에 쓰일 수 있어요. 아이와 함께 쓰는 계정이라면 꺼 두는 걸 권합니다.</p>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+
+  <div class="section-h">수찬이의 실제 기록</div>
+  <a class="case" href="https://suchan-imagination-to-reality.socialkim.chatgpt.site/" target="_blank" rel="noopener"><b>상상이 현실이 되기까지 · 그림과 두 편의 영상</b><span>음성으로 설명한 캐릭터가 영상이 되기까지</span></a>
+  <a class="case" href="https://suchan-rhythm-quest.socialkim.chatgpt.site/" target="_blank" rel="noopener"><b>보프의 리듬 원정대 · 직접 해 보기</b><span>방향키 또는 D F J K · 휴대폰은 화면의 네 버튼</span></a>
+  <a class="case" href="https://suchan-rhythm-quest.socialkim.chatgpt.site/history.html" target="_blank" rel="noopener"><b>전체 제작 과정과 다음 날의 수정 기록</b><span>어떤 말을 했고 무엇이 바뀌었는지</span></a>
+
+  <div class="section-h">집에서 더 해 보기</div>
+  <div class="card" data-id="home">
+    <div class="say" onclick="cp(this)">
+      <div class="lbl">잠자리 동화 셋이서 번갈아 짓기</div>
+      <div class="txt">우리 가족이 한 문장씩 이야기를 이어서 동화를 만들 거야. 너는 우리가 말한 문장을 이어 붙이고, 차례가 오면 딱 한 문장만 보태줘. 첫 문장은 내가 할게: <u>(아이의 첫 문장)</u></div>
+      <div class="hint">누르면 복사</div>
+    </div>
+    <div class="say" onclick="cp(this)">
+      <div class="lbl">AI 틀리게 만들기 놀이</div>
+      <div class="txt">방금 그린 그림에서 이상한 곳이나 틀린 곳이 있으면 내가 찾아볼게. 너는 어디가 이상한지 말하지 말고, 내가 찾으면 맞았는지만 알려줘.</div>
+      <div class="hint">누르면 복사 · 아이가 감상자에서 검증자가 됩니다</div>
+    </div>
+    <button class="done" onclick="dn(this)">완료 표시</button>
+  </div>
+</section>
+
+</main>
+
+<section class="bio">
+  <h3>『AI 시대, 부모로 살아가기』</h3>
+  <p><b>김덕진</b> · IT커뮤니케이션연구소 소장, 세종사이버대학교 컴퓨터·AI공학과 교수. 기술을 보는 아빠.</p>
+  <p><b>임한나</b> · 정서지능 교육 브랜드 패브릭토리 대표, 14년 차 정서지능 교육자. 마음을 보는 엄마.</p>
+  <p style="color:var(--muted)">같은 아이를 키우는 두 사람이 기술의 AI(Artificial Intelligence)와 마음의 AI(Affective Intelligence)로 함께 쓴 책입니다.</p>
+</section>
+<p class="foot">챗GPT 기능과 요금제 구분은 2026년 10월 기준입니다. 기능은 계정마다 순차 적용되며 화면 이름이 조금 다를 수 있어요. AI가 만든 결과는 아이의 생각을 꺼내는 출발점입니다.</p>
+
+<div class="fs">
+  <button onclick="qr(true)" aria-label="QR 코드 보기">QR</button>
+  <button onclick="fz(-1)" aria-label="글자 작게">가-</button>
+  <button onclick="fz(1)" aria-label="글자 크게">가+</button>
+</div>
+<div class="qr" id="qr" onclick="qr(false)">
+  <div class="in" onclick="event.stopPropagation()">
+    <h3>휴대폰으로 같이 열기</h3>
+    <div id="qrc"></div>
+    <div class="u" id="qru"></div>
+    <button class="done" onclick="qr(false)">닫기</button>
+  </div>
+</div>
+<div class="toast" id="toast">복사됐어요! 챗GPT에 붙여넣거나 소리 내어 말해 보세요</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+<script>
+document.querySelectorAll('.tab').forEach(b=>b.addEventListener('click',()=>{
+  document.querySelectorAll('.tab').forEach(x=>x.classList.remove('on'));
+  document.querySelectorAll('.panel').forEach(x=>x.classList.remove('on'));
+  b.classList.add('on');document.getElementById('p-'+b.dataset.t).classList.add('on');
+  b.scrollIntoView({inline:'center',block:'nearest',behavior:'smooth'});
+  window.scrollTo({top:document.querySelector('.tabs').offsetTop,behavior:'smooth'});
+}));
+function cp(el){
+  const t=el.querySelector('.txt')||el;
+  const s=t.innerText.replace(/\s+\n/g,'\n').trim();
+  const ok=()=>toast();
+  if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(s).then(ok).catch(()=>fallback(s))}else fallback(s);
+}
+function fallback(s){const a=document.createElement('textarea');a.value=s;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy')}catch(e){}a.remove();toast()}
+let tt;function toast(){const t=document.getElementById('toast');t.classList.add('show');clearTimeout(tt);tt=setTimeout(()=>t.classList.remove('show'),1800)}
+const cards=[...document.querySelectorAll('.card[data-id]')].filter(c=>c.querySelector('.done'));
+const total=cards.length;document.getElementById('totalN').textContent=total;
+let done=new Set();
+try{done=new Set(JSON.parse(localStorage.getItem('bt-done')||'[]'))}catch(e){}
+function paint(){
+  cards.forEach(c=>{const b=c.querySelector('.done');const on=done.has(c.dataset.id);b.classList.toggle('on',on);b.textContent=on?'완료 ✓':'완료 표시'});
+  const n=cards.filter(c=>done.has(c.dataset.id)).length;
+  document.getElementById('doneN').textContent=n;document.getElementById('barFill').style.width=(n/total*100)+'%';
+}
+function dn(btn){const id=btn.closest('.card').dataset.id;done.has(id)?done.delete(id):done.add(id);try{localStorage.setItem('bt-done',JSON.stringify([...done]))}catch(e){}paint()}
+paint();
+let zz=1;function fz(d){zz=Math.max(.9,Math.min(1.4,zz+d*.1));document.body.style.zoom=zz}
+let made=false;
+function qr(on){
+  document.getElementById('qr').classList.toggle('on',on);
+  if(on&&!made){const u=location.href.split('#')[0];document.getElementById('qru').textContent=u;
+    try{new QRCode(document.getElementById('qrc'),{text:u,width:260,height:260,correctLevel:QRCode.CorrectLevel.M});made=true}
+    catch(e){document.getElementById('qrc').textContent='QR을 불러오지 못했어요. 위 주소를 직접 입력해 주세요.'}}
+}
+</script>
+</body>
+</html>
